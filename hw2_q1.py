@@ -1,3 +1,6 @@
+from pathlib import Path
+import re
+
 MORSE_CODE = {'A': '.-',     'B': '-...',   'C': '-.-.',
               'D': '-..',    'E': '.',      'F': '..-.',
               'G': '--.',    'H': '....',   'I': '..',
@@ -37,3 +40,20 @@ def english_to_morse(
         Name of output file containing the translated Morse code. Please don't change
         it since it's also hard-coded in the tests file.
     """
+    source = Path(input_file).read_text().upper()
+
+    # Break the text into individual tokens on spaces or newlines
+    segments = re.split(r'[ \n]', source)
+
+    # For each token, map its characters to Morse and drop any empty results
+    morse_list = [''.join(filter(None, map(MORSE_CODE.get, seg)))
+                  for seg in segments]
+
+    # Write one Morse‑encoded token per line in the output file
+    Path(output_file).write_text('\n'.join(morse_list))
+
+
+
+if __name__ == "__main__":
+    english_to_morse()
+
